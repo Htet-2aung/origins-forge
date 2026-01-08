@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,196 +13,147 @@
                 extend: {
                     colors: {
                         origins: '#FF6B00',
-                        darkBg: '#0A0A0A',
-                        darkCard: '#141414'
+                        darkBg: '#080808',
+                        darkCard: '#111111'
                     }
                 }
             }
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.3s ease; }
-        .code-block { font-family: 'Fira Code', monospace; }
-        .sidebar-link.active { border-right: 4px solid #FF6B00; background: rgba(255, 107, 0, 0.1); color: #FF6B00; }
-        .dark .glass { background: rgba(20, 20, 20, 0.8); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .light .glass { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.05); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.4s ease; }
+        
+        /* Smooth Sidebar Highlight */
+        .sidebar-link {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sidebar-link.active {
+            color: #FF6B00;
+            background: rgba(255, 107, 0, 0.08);
+            font-weight: 600;
+        }
+        .sidebar-link.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 20%;
+            height: 60%;
+            width: 3px;
+            background: #FF6B00;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .dark .glass { background: rgba(18, 18, 18, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .light .glass { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0, 0, 0, 0.05); }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     </style>
 </head>
-<body class="dark bg-darkBg text-slate-300 overflow-x-hidden" id="root">
+<body class="dark bg-darkBg text-slate-400 selection:bg-origins/30" id="root">
 
-    <button onclick="toggleTheme()" class="fixed bottom-8 right-8 z-50 p-4 rounded-full bg-origins text-white shadow-2xl hover:scale-110 active:scale-95 transition-all">
+    <button onclick="toggleTheme()" class="fixed bottom-10 right-10 z-50 w-12 h-12 flex items-center justify-center rounded-full bg-origins text-white shadow-xl hover:scale-110 active:scale-95 transition-all">
         <i id="theme-icon" class="fas fa-moon"></i>
     </button>
 
     <div class="flex">
-        <aside class="w-72 h-screen sticky top-0 hidden lg:flex flex-col border-r border-white/5 bg-black/20 backdrop-blur-md p-6">
-            <div class="flex items-center gap-3 mb-12 px-2">
-                <img src="https://github.com/Htet-2aung/origins-forge/blob/main/docs/logo.png?raw=true" alt="Origins Logo" class="w-10 h-10 object-contain">
-                <span class="text-2xl font-black tracking-tighter dark:text-white light:text-black uppercase">Origins</span>
+        <aside class="w-64 h-screen sticky top-0 hidden lg:flex flex-col border-r border-white/5 bg-black/10 backdrop-blur-xl p-6">
+            <div class="flex items-center gap-3 mb-10 px-2">
+                <img src="https://github.com/Htet-2aung/origins-forge/blob/main/docs/logo.png?raw=true" alt="Origins" class="h-8 w-auto object-contain">
+                <span class="text-xl font-extrabold tracking-tighter dark:text-white light:text-black uppercase">Origins</span>
             </div>
 
-            <nav class="flex-1 space-y-8 overflow-y-auto custom-scrollbar">
+            <nav class="flex-1 space-y-6 overflow-y-auto pr-2">
                 <div>
-                    <h4 class="text-[10px] uppercase tracking-[0.2em] text-origins font-bold mb-4 px-2">Installation</h4>
+                    <h4 class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3 px-3">Onboarding</h4>
                     <ul class="space-y-1">
-                        <li><a href="#quickstart" class="sidebar-link block px-3 py-2 rounded-lg hover:bg-white/5 transition">Quick Start</a></li>
-                        <li><a href="#doctor" class="sidebar-link block px-3 py-2 rounded-lg hover:bg-white/5 transition">System Check</a></li>
+                        <li><a href="#quickstart" class="sidebar-link block px-4 py-2.5 rounded-lg text-sm transition">Quick Start</a></li>
+                        <li><a href="#doctor" class="sidebar-link block px-4 py-2.5 rounded-lg text-sm transition">Health Check</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="text-[10px] uppercase tracking-[0.2em] text-origins font-bold mb-4 px-2">CLI Logic</h4>
+                    <h4 class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3 px-3">Engine CLI</h4>
                     <ul class="space-y-1">
-                        <li><a href="#clone" class="sidebar-link block px-3 py-2 rounded-lg hover:bg-white/5 transition">Forge Clone</a></li>
-                        <li><a href="#setup" class="sidebar-link block px-3 py-2 rounded-lg hover:bg-white/5 transition">Smart Setup</a></li>
-                        <li><a href="#ai" class="sidebar-link block px-3 py-2 rounded-lg hover:bg-white/5 transition">AI Assistant</a></li>
+                        <li><a href="#clone" class="sidebar-link block px-4 py-2.5 rounded-lg text-sm transition">Forge Clone</a></li>
+                        <li><a href="#setup" class="sidebar-link block px-4 py-2.5 rounded-lg text-sm transition">Project Setup</a></li>
+                        <li><a href="#ai" class="sidebar-link block px-4 py-2.5 rounded-lg text-sm transition">Origins AI</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="text-[10px] uppercase tracking-[0.2em] text-origins font-bold mb-4 px-2">Engineering</h4>
+                    <h4 class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3 px-3">Operations</h4>
                     <ul class="space-y-1">
-                        <li><a href="#gen" class="sidebar-link block px-3 py-2 rounded-lg hover:bg-white/5 transition">Scaffolding</a></li>
-                        <li><a href="#db" class="sidebar-link block px-3 py-2 rounded-lg hover:bg-white/5 transition">Local Infrastructure</a></li>
-                        <li><a href="#deploy" class="sidebar-link block px-3 py-2 rounded-lg hover:bg-white/5 transition">Deployment Flow</a></li>
+                        <li><a href="#db" class="sidebar-link block px-4 py-2.5 rounded-lg text-sm transition">Database Ops</a></li>
+                        <li><a href="#deploy" class="sidebar-link block px-4 py-2.5 rounded-lg text-sm transition">Cloud Shipping</a></li>
                     </ul>
                 </div>
             </nav>
         </aside>
 
-        <main class="flex-1 min-h-screen p-6 md:p-16 lg:p-24 bg-gradient-to-br from-transparent to-origins/5">
+        <main class="flex-1 min-h-screen p-8 md:p-16 lg:p-20">
             
             <header class="max-w-4xl mb-24">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-origins/10 border border-origins/20 text-origins text-[10px] font-bold mb-6 tracking-widest uppercase">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-origins opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-origins"></span>
-                    </span>
-                    Internal Tooling v4.0.2
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-origins/5 border border-origins/10 text-origins text-[10px] font-bold mb-6 tracking-widest uppercase">
+                    Developer Portal v4.0.2
                 </div>
-                <h1 class="text-6xl lg:text-7xl font-black mb-8 tracking-tighter dark:text-white light:text-black leading-tight">
+                <h1 class="text-5xl lg:text-6xl font-black mb-8 tracking-tighter dark:text-white light:text-black leading-tight">
                     The Origins <span class="text-origins">Forge.</span>
                 </h1>
-                <p class="text-xl text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
-                    A proprietary Internal Developer Platform (IDP) designed to accelerate project delivery by 400%. Built for engineers, by engineers.
+                <p class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
+                    Automating the path from local development to global scale. Proprietary toolchain for Origins internal engineers.
                 </p>
             </header>
 
             <section id="quickstart" class="mb-32">
                 <div class="flex items-center gap-4 mb-8">
-                    <h2 class="text-3xl font-black dark:text-white light:text-black tracking-tight">Installation Protocol</h2>
-                    <div class="h-px flex-1 bg-white/10"></div>
+                    <h2 class="text-2xl font-bold dark:text-white light:text-black">Getting Started</h2>
+                    <div class="h-[1px] flex-1 bg-white/5"></div>
                 </div>
-                <div class="glass p-8 rounded-3xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-origins/10 blur-[100px]"></div>
-                    <p class="mb-6 font-semibold">Run the following in your terminal to initialize the Forge environment:</p>
-                    <div class="bg-black p-6 rounded-2xl border border-white/10 group relative">
-                        <button class="absolute top-4 right-4 text-slate-500 hover:text-origins"><i class="far fa-copy"></i></button>
-                        <pre class="code-block text-sm text-origins leading-7">
-<span class="opacity-40"># Clone the IDP core</span>
+                <div class="glass p-8 rounded-2xl">
+                    <pre class="font-mono text-sm text-origins leading-7">
+<span class="text-slate-600"># Install the tool globally</span>
 git clone https://github.com/Hsu212/origins-cli.git
-
-<span class="opacity-40"># Link the global command</span>
 cd origins-cli && pip install --editable .
 
-<span class="opacity-40"># Sync Blueprint manifest</span>
+<span class="text-slate-600"># Initialize blueprints</span>
 origins sync</pre>
-                    </div>
                 </div>
             </section>
 
             
 
-            <section id="commands" class="mb-32">
-                <div class="flex items-center gap-4 mb-12">
-                    <h2 class="text-3xl font-black dark:text-white light:text-black tracking-tight">CLI Capability Matrix</h2>
-                    <div class="h-px flex-1 bg-white/10"></div>
+            <section id="clone" class="mb-32">
+                <div class="flex items-center gap-4 mb-10">
+                    <h2 class="text-2xl font-bold dark:text-white light:text-black">Core Capabilities</h2>
+                    <div class="h-[1px] flex-1 bg-white/5"></div>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div id="clone" class="glass p-8 rounded-3xl hover:border-origins/40 transition-all group">
-                        <div class="w-12 h-12 rounded-2xl bg-origins/10 flex items-center justify-center text-origins mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-clone text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 dark:text-white light:text-black">origins clone [ID]</h3>
-                        <p class="text-sm text-slate-500 leading-relaxed mb-4">
-                            Pulls the master template from GitHub, scrubs the git history, and initializes a new client workspace in <code>/projects</code>.
-                        </p>
-                        <code class="text-[10px] bg-black/40 p-2 rounded block">Example: origins clone web-mvp</code>
+                    <div class="glass p-8 rounded-2xl hover:bg-origins/[0.02] transition">
+                        <i class="fas fa-terminal text-origins mb-6 text-xl"></i>
+                        <h3 class="text-lg font-bold mb-2 dark:text-white">origins clone [ID]</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Clone master templates directly into our project structure with automated git scrubbing.</p>
                     </div>
 
-                    <div id="setup" class="glass p-8 rounded-3xl hover:border-origins/40 transition-all group">
-                        <div class="w-12 h-12 rounded-2xl bg-origins/10 flex items-center justify-center text-origins mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-magic text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 dark:text-white light:text-black">origins setup</h3>
-                        <p class="text-sm text-slate-500 leading-relaxed mb-4">
-                            The "One-Command" installer. Auto-detects project stack, creates virtual environments, installs dependencies, and boots localhost.
-                        </p>
-                        <code class="text-[10px] bg-black/40 p-2 rounded block">Context: Run inside project folder</code>
-                    </div>
-
-                    <div id="ai" class="glass p-8 rounded-3xl hover:border-origins/40 transition-all group">
-                        <div class="w-12 h-12 rounded-2xl bg-origins/10 flex items-center justify-center text-origins mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-brain text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 dark:text-white light:text-black">origins ask [MSG]</h3>
-                        <p class="text-sm text-slate-500 leading-relaxed mb-4">
-                            Terminal-integrated AI trained on Origins engineering standards. Use it for debugging, refactoring, or generating logic.
-                        </p>
-                        <code class="text-[10px] bg-black/40 p-2 rounded block">Cost: $0.00 (Company Key)</code>
-                    </div>
-
-                    <div id="deploy" class="glass p-8 rounded-3xl hover:border-origins/40 transition-all group">
-                        <div class="w-12 h-12 rounded-2xl bg-origins/10 flex items-center justify-center text-origins mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-rocket text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 dark:text-white light:text-black">origins ship & deploy</h3>
-                        <p class="text-sm text-slate-500 leading-relaxed mb-4">
-                            Wraps the Vercel/Render API. Ships current branch to production and provides a live URL for client review instantly.
-                        </p>
-                        <code class="text-[10px] bg-black/40 p-2 rounded block">Output: Production URL</code>
+                    <div id="setup" class="glass p-8 rounded-2xl hover:bg-origins/[0.02] transition">
+                        <i class="fas fa-bolt text-origins mb-6 text-xl"></i>
+                        <h3 class="text-lg font-bold mb-2 dark:text-white">origins setup</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Stack-aware installer that builds virtual environments and launches local instances.</p>
                     </div>
                 </div>
             </section>
 
-            <section id="doctor" class="mb-32">
-                <div class="flex items-center gap-4 mb-8">
-                    <h2 class="text-3xl font-black dark:text-white light:text-black tracking-tight">Troubleshooting</h2>
-                    <div class="h-px flex-1 bg-white/10"></div>
-                </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <details class="glass rounded-2xl overflow-hidden group">
-                        <summary class="p-6 cursor-pointer font-bold flex justify-between items-center hover:bg-white/5">
-                            Port already in use (EADDRINUSE)
-                            <i class="fas fa-chevron-down text-origins group-open:rotate-180 transition"></i>
-                        </summary>
-                        <div class="p-6 pt-0 text-sm text-slate-400">
-                            Run <code>origins kill [PORT]</code> to instantly terminate the process blocking your development server.
-                        </div>
-                    </details>
-                    <details class="glass rounded-2xl overflow-hidden group">
-                        <summary class="p-6 cursor-pointer font-bold flex justify-between items-center hover:bg-white/5">
-                            Blueprints not appearing after sync
-                            <i class="fas fa-chevron-down text-origins group-open:rotate-180 transition"></i>
-                        </summary>
-                        <div class="p-6 pt-0 text-sm text-slate-400">
-                            Check your internet connection and ensure your OpenAI/GitHub tokens are set in <code>~/.origins/config.json</code>.
-                        </div>
-                    </details>
-                </div>
-            </section>
-
-            <footer class="pt-20 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 opacity-40 hover:opacity-100 transition duration-500">
-                <div class="flex items-center gap-4">
-                    <img src="YOUR_LOGO_URL_HERE" alt="Origins" class="w-6 grayscale hover:grayscale-0 transition">
-                    <span class="text-[10px] font-black tracking-[0.3em] uppercase">Origins Engineering HQ</span>
+            <footer class="pt-20 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 opacity-40">
+                <div class="flex items-center gap-3">
+                    <img src="YOUR_LOGO_URL_HERE" alt="Origins" class="h-5 w-auto grayscale">
+                    <span class="text-[10px] font-bold tracking-widest uppercase">Origins Engineering</span>
                 </div>
                 <div class="text-[10px] font-medium space-x-6">
-                    <a href="#" class="hover:text-origins transition underline">Privacy Policy</a>
-                    <a href="#" class="hover:text-origins transition underline">Terms of Use</a>
-                    <a href="#" class="hover:text-origins transition underline">Internal Wiki</a>
+                    <a href="https://github.com/Hsu212" class="hover:text-origins">GitHub</a>
+                    <a href="#" class="hover:text-origins">Internal Wiki</a>
                 </div>
             </footer>
         </main>
@@ -213,36 +164,31 @@ origins sync</pre>
             const root = document.getElementById('root');
             const icon = document.getElementById('theme-icon');
             if (root.classList.contains('dark')) {
-                root.classList.remove('dark', 'bg-darkBg', 'text-slate-300');
-                root.classList.add('light', 'bg-white', 'text-slate-800');
+                root.classList.replace('dark', 'light');
+                root.classList.replace('bg-darkBg', 'bg-white');
+                root.classList.replace('text-slate-400', 'text-slate-800');
                 icon.classList.replace('fa-moon', 'fa-sun');
             } else {
-                root.classList.remove('light', 'bg-white', 'text-slate-800');
-                root.classList.add('dark', 'bg-darkBg', 'text-slate-300');
+                root.classList.replace('light', 'dark');
+                root.classList.replace('bg-white', 'bg-darkBg');
+                root.classList.replace('text-slate-800', 'text-slate-400');
                 icon.classList.replace('fa-sun', 'fa-moon');
             }
         }
 
-        // Active Link Highlighting
-        const sections = document.querySelectorAll('section, div[id]');
-        const navLinks = document.querySelectorAll('.sidebar-link');
-        
-        window.addEventListener('scroll', () => {
-            let current = "";
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 150) {
-                    current = section.getAttribute('id');
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.5 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const id = entry.target.getAttribute('id');
+                const link = document.querySelector(`.sidebar-link[href="#${id}"]`);
+                if (entry.isIntersecting) {
+                    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                    if (link) link.classList.add('active');
                 }
             });
+        }, observerOptions);
 
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
-                }
-            });
-        });
+        document.querySelectorAll('section').forEach(section => observer.observe(section));
     </script>
 </body>
 </html>
