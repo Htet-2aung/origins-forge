@@ -363,6 +363,24 @@ origins sync</pre>
         }, observerOptions);
 
         document.querySelectorAll('section').forEach(section => observer.observe(section));
+
+
+        function copyInstallCommand() {
+    const cmd = "git clone https://github.com/Htet-2aung/origins-forge.git && cd origins-forge && pip install -e .";
+    navigator.clipboard.writeText(cmd);
+    
+    // Industrial Standard Feedback
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = `<span class="relative flex items-center gap-3"><i class="fas fa-check"></i> Copied to Clipboard</span>`;
+    btn.classList.replace('bg-origins', 'bg-green-600');
+    
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.replace('bg-green-600', 'bg-origins');
+    }, 2000);
+}
     </script>
 </body>
 </html>
