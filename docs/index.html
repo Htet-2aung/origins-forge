@@ -3,109 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Origins Forge | Internal Documentation</title>
+    <title>Origins Forge | Engineering Docs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        origins: '#FF6B00',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { background-color: #050505; color: #e2e8f0; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        .neon-border { border-left: 4px solid #6366f1; }
-        code { color: #818cf8; background: #111; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', monospace; }
-        .sidebar-link:hover { background: rgba(99, 102, 241, 0.1); color: #818cf8; }
-        pre { background: #000 !important; border: 1px solid #222; border-radius: 8px; padding: 1rem; overflow-x: auto; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;500&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .code-font { font-family: 'Fira Code', monospace; }
+        .neon-orange { box-shadow: 0 0 15px rgba(255, 107, 0, 0.3); }
+        .dark .glass { background: rgba(20, 20, 20, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .light .glass { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.1); }
     </style>
 </head>
-<body class="flex">
+<body class="dark bg-black text-slate-200" id="body-root">
 
-    <aside class="w-64 h-screen sticky top-0 border-r border-white/10 p-6 hidden md:block">
-        <div class="flex items-center gap-2 mb-10">
-            <div class="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center text-white">
-                <i class="fas fa-hammer"></i>
+    <button onclick="toggleTheme()" class="fixed top-6 right-6 z-50 p-3 rounded-full bg-origins text-white shadow-lg hover:scale-110 transition">
+        <i id="theme-icon" class="fas fa-sun"></i>
+    </button>
+
+    <div class="flex">
+        <aside class="w-64 h-screen sticky top-0 border-r border-white/10 dark:border-white/10 light:border-black/10 p-8 hidden md:block transition-all">
+            <div class="flex items-center gap-3 mb-12">
+                <div class="w-10 h-10 bg-origins rounded-lg flex items-center justify-center text-white text-xl shadow-lg">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <span class="font-black tracking-tighter text-2xl dark:text-white light:text-black">ORIGINS</span>
             </div>
-            <span class="font-bold tracking-tighter text-xl">ORIGINS <span class="text-indigo-500">FORGE</span></span>
-        </div>
-        
-        <nav class="space-y-1 text-sm">
-            <p class="text-xs font-bold text-gray-500 uppercase mb-4 tracking-widest">Guide</p>
-            <a href="#getting-started" class="sidebar-link block p-2 rounded transition">Getting Started</a>
-            <a href="#cli-commands" class="sidebar-link block p-2 rounded transition">CLI Commands</a>
-            <a href="#blueprints" class="sidebar-link block p-2 rounded transition">Blueprint Registry</a>
-            <a href="#deployment" class="sidebar-link block p-2 rounded transition">Deployment Flow</a>
             
-            <p class="text-xs font-bold text-gray-500 uppercase mt-8 mb-4 tracking-widest">Resources</p>
-            <a href="https://github.com/Hsu212" target="_blank" class="sidebar-link block p-2 rounded transition"><i class="fab fa-github mr-2"></i> Hsu212</a>
-            <a href="https://github.com/Htet-2aung" target="_blank" class="sidebar-link block p-2 rounded transition"><i class="fab fa-github mr-2"></i> Htet-2aung</a>
-        </nav>
-    </aside>
+            <nav class="space-y-2 text-sm">
+                <p class="text-[10px] font-bold text-gray-500 uppercase mb-4 tracking-[0.2em]">Core Manual</p>
+                <a href="#install" class="block p-2 rounded hover:bg-origins/10 hover:text-origins transition">Deployment</a>
+                <a href="#commands" class="block p-2 rounded hover:bg-origins/10 hover:text-origins transition">CLI Logic</a>
+                <a href="#blueprints" class="block p-2 rounded hover:bg-origins/10 hover:text-origins transition">Blueprints</a>
+                <a href="#security" class="block p-2 rounded hover:bg-origins/10 hover:text-origins transition">Security</a>
+            </nav>
+        </aside>
 
-    <main class="flex-1 p-6 md:p-16 max-w-5xl">
-        
-        <header class="mb-16">
-            <span class="text-indigo-500 font-mono text-sm">[ PROPRIETARY TOOLSET v4.0 ]</span>
-            <h1 class="text-5xl font-black mt-2 mb-4 tracking-tight">Internal Developer Platform</h1>
-            <p class="text-xl text-gray-400 leading-relaxed">The unified command-line interface for rapid software engineering at Origins.</p>
-        </header>
+        <main class="flex-1 p-8 md:p-20 max-w-5xl">
+            <header class="mb-20">
+                <div class="inline-block px-3 py-1 rounded bg-origins/10 text-origins text-xs font-bold mb-4 tracking-widest uppercase">
+                    Internal Developer Platform v4.0
+                </div>
+                <h1 class="text-6xl font-black mb-6 tracking-tight dark:text-white light:text-black">
+                    Forge <span class="text-origins">Documentation</span>
+                </h1>
+                <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed">
+                    The engineering backbone of Origins. This toolset automates blueprint generation, AI-assisted debugging, and multi-modal cloud deployments.
+                </p>
+            </header>
 
-        <section id="getting-started" class="mb-20">
-            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                <i class="fas fa-terminal text-indigo-500"></i> Getting Started
-            </h2>
-            <div class="glass p-8 rounded-2xl neon-border">
-                <p class="mb-4">To install the forge toolset globally on your local machine, run:</p>
-                <pre><code>git clone https://github.com/Hsu212/origins-cli.git
-cd origins-cli
-pip install --editable .
-origins sync</code></pre>
-            </div>
-        </section>
+            <section id="install" class="mb-24">
+                <h2 class="text-2xl font-black mb-8 flex items-center gap-4 dark:text-white light:text-black">
+                    <span class="text-origins">01.</span> Installation
+                </h2>
+                <div class="glass p-8 rounded-2xl neon-orange transition-all">
+                    <p class="mb-6 opacity-80 italic border-l-2 border-origins pl-4">Ensure your SSH keys are added to GitHub before cloning blueprints.</p>
+                    <div class="bg-black/50 dark:bg-black/50 light:bg-gray-100 p-6 rounded-xl overflow-x-auto border border-white/5">
+                        <pre class="code-font text-sm leading-7">
+<span class="text-origins">$</span> git clone https://github.com/Hsu212/origins-cli.git
+<span class="text-origins">$</span> cd origins-cli
+<span class="text-origins">$</span> pip install --editable .
+<span class="text-origins">$</span> origins sync</pre>
+                    </div>
+                </div>
+            </section>
 
-        <section id="cli-commands" class="mb-20">
-            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                <i class="fas fa-list text-indigo-500"></i> Command Reference
-            </h2>
             
-            <div class="space-y-4">
-                <div class="glass p-6 rounded-xl">
-                    <h3 class="font-bold text-indigo-400">origins clone [id]</h3>
-                    <p class="text-gray-400 text-sm">Clones a master blueprint into <code>origins-cli/projects/</code>. Detaches git history automatically.</p>
-                </div>
-                <div class="glass p-6 rounded-xl">
-                    <h3 class="font-bold text-indigo-400">origins setup</h3>
-                    <p class="text-gray-400 text-sm">Detects project type, installs <code>node_modules</code> or <code>venv</code>, and starts local server.</p>
-                </div>
-                <div class="glass p-6 rounded-xl">
-                    <h3 class="font-bold text-indigo-400">origins ask "question"</h3>
-                    <p class="text-gray-400 text-sm">Queries the Origins AI assistant for coding help directly in the terminal.</p>
-                </div>
-                <div class="glass p-6 rounded-xl">
-                    <h3 class="font-bold text-indigo-400">origins ship -m "msg"</h3>
-                    <p class="text-gray-400 text-sm">Automated Add-Commit-Push workflow for rapid versioning.</p>
-                </div>
-            </div>
-        </section>
 
-        
-
-        <section id="blueprints" class="mb-20">
-            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                <i class="fas fa-cubes text-indigo-500"></i> Blueprint Registry
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass p-6 rounded-xl border-t-4 border-blue-500">
-                    <h3 class="font-bold mb-2">Web Genesis (web-mvp)</h3>
-                    <p class="text-sm text-gray-500">Next.js + Auth + Payments dashboard.</p>
+            <section id="commands" class="mb-24">
+                <h2 class="text-2xl font-black mb-8 flex items-center gap-4 dark:text-white light:text-black">
+                    <span class="text-origins">02.</span> Command Protocol
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-6 bg-origins/5 border border-origins/20 rounded-xl">
+                        <h3 class="font-bold text-origins mb-2">origins clone</h3>
+                        <p class="text-sm opacity-70">Spawns a client workspace into <code>/projects</code>.</p>
+                    </div>
+                    <div class="p-6 bg-origins/5 border border-origins/20 rounded-xl">
+                        <h3 class="font-bold text-origins mb-2">origins setup</h3>
+                        <p class="text-sm opacity-70">Automatic stack detection & localhost launch.</p>
+                    </div>
+                    <div class="p-6 bg-origins/5 border border-origins/20 rounded-xl">
+                        <h3 class="font-bold text-origins mb-2">origins ask</h3>
+                        <p class="text-sm opacity-70">Interactive terminal session with Origins AI.</p>
+                    </div>
+                    <div class="p-6 bg-origins/5 border border-origins/20 rounded-xl">
+                        <h3 class="font-bold text-origins mb-2">origins ship</h3>
+                        <p class="text-sm opacity-70">Aggregated Git workflow for rapid pushes.</p>
+                    </div>
                 </div>
-                <div class="glass p-6 rounded-xl border-t-4 border-green-500">
-                    <h3 class="font-bold mb-2">Vision Node (vision-core)</h3>
-                    <p class="text-sm text-gray-500">Python + YOLOv8 real-time detection core.</p>
+            </section>
+
+            <section id="blueprints" class="mb-24">
+                <h2 class="text-2xl font-black mb-8 dark:text-white light:text-black">
+                    <span class="text-origins">03.</span> Blueprint Registry
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-white/10">
+                                <th class="py-4 font-bold text-xs uppercase tracking-widest text-origins">ID</th>
+                                <th class="py-4 font-bold text-xs uppercase tracking-widest text-origins">Description</th>
+                                <th class="py-4 font-bold text-xs uppercase tracking-widest text-origins">Stack</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm">
+                            <tr class="border-b border-white/5">
+                                <td class="py-4 font-mono">web-mvp</td>
+                                <td class="py-4 opacity-70">Next.js Enterprise Admin Dashboard</td>
+                                <td class="py-4"><span class="px-2 py-1 bg-white/5 rounded text-[10px]">React/TS</span></td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="py-4 font-mono">vision-node</td>
+                                <td class="py-4 opacity-70">Python Computer Vision Core</td>
+                                <td class="py-4"><span class="px-2 py-1 bg-white/5 rounded text-[10px]">FastAPI/AI</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <footer class="mt-20 pt-10 border-t border-white/10 text-center text-gray-600 text-xs">
-            &copy; 2026 Origins Engineering. Proprietary & Confidential.
-        </footer>
+            <footer class="mt-40 pt-10 border-t border-white/10 dark:border-white/10 light:border-black/10 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest opacity-40">
+                <span>&copy; 2026 Origins Engineering</span>
+                <span>Proprietary Restricted Access</span>
+            </footer>
+        </main>
+    </div>
 
-    </main>
+    <script>
+        function toggleTheme() {
+            const body = document.getElementById('body-root');
+            const icon = document.getElementById('theme-icon');
+            
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark', 'bg-black', 'text-slate-200');
+                body.classList.add('light', 'bg-white', 'text-slate-800');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                body.classList.remove('light', 'bg-white', 'text-slate-800');
+                body.classList.add('dark', 'bg-black', 'text-slate-200');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+    </script>
 </body>
 </html>
