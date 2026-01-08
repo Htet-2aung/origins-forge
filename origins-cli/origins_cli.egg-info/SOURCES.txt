@@ -1,8 +1,0 @@
-main.py
-setup.py
-origins_cli.egg-info/PKG-INFO
-origins_cli.egg-info/SOURCES.txt
-origins_cli.egg-info/dependency_links.txt
-origins_cli.egg-info/entry_points.txt
-origins_cli.egg-info/requires.txt
-origins_cli.egg-info/top_level.txt
