@@ -13,7 +13,7 @@
 
 ## 🛠 Core Capabilities
 
-Origins Forge transforms our student engineering team into a high-output dev shop by automating "The Boring Stuff":
+Origins Forge transforms our software engineering team into a high-output dev shop by automating "The Boring Stuff":
 
 * **`origins clone`**: Instant scaffolding of client projects using verified GitHub blueprints.
 * **`origins setup`**: Smart detection of project stacks (Next.js/FastAPI) with auto-installation.
@@ -35,5 +35,5 @@ Origins Forge transforms our student engineering team into a high-output dev sho
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/Hsu212/origins-cli.git](https://github.com/Hsu212/origins-cli.git)
+   git clone [https://github.com/Htet-2aung/origins-forge.git](https://github.com/Htet-2aung/origins-forge.git)
    cd origins-cli
