@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Origins Forge | Internal Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #050505; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .neon-border { border-left: 4px solid #6366f1; }
+        code { color: #818cf8; background: #111; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', monospace; }
+        .sidebar-link:hover { background: rgba(99, 102, 241, 0.1); color: #818cf8; }
+        pre { background: #000 !important; border: 1px solid #222; border-radius: 8px; padding: 1rem; overflow-x: auto; }
+    </style>
+</head>
+<body class="flex">
+
+    <aside class="w-64 h-screen sticky top-0 border-r border-white/10 p-6 hidden md:block">
+        <div class="flex items-center gap-2 mb-10">
+            <div class="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center text-white">
+                <i class="fas fa-hammer"></i>
+            </div>
+            <span class="font-bold tracking-tighter text-xl">ORIGINS <span class="text-indigo-500">FORGE</span></span>
+        </div>
+        
+        <nav class="space-y-1 text-sm">
+            <p class="text-xs font-bold text-gray-500 uppercase mb-4 tracking-widest">Guide</p>
+            <a href="#getting-started" class="sidebar-link block p-2 rounded transition">Getting Started</a>
+            <a href="#cli-commands" class="sidebar-link block p-2 rounded transition">CLI Commands</a>
+            <a href="#blueprints" class="sidebar-link block p-2 rounded transition">Blueprint Registry</a>
+            <a href="#deployment" class="sidebar-link block p-2 rounded transition">Deployment Flow</a>
+            
+            <p class="text-xs font-bold text-gray-500 uppercase mt-8 mb-4 tracking-widest">Resources</p>
+            <a href="https://github.com/Hsu212" target="_blank" class="sidebar-link block p-2 rounded transition"><i class="fab fa-github mr-2"></i> Hsu212</a>
+            <a href="https://github.com/Htet-2aung" target="_blank" class="sidebar-link block p-2 rounded transition"><i class="fab fa-github mr-2"></i> Htet-2aung</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-6 md:p-16 max-w-5xl">
+        
+        <header class="mb-16">
+            <span class="text-indigo-500 font-mono text-sm">[ PROPRIETARY TOOLSET v4.0 ]</span>
+            <h1 class="text-5xl font-black mt-2 mb-4 tracking-tight">Internal Developer Platform</h1>
+            <p class="text-xl text-gray-400 leading-relaxed">The unified command-line interface for rapid software engineering at Origins.</p>
+        </header>
+
+        <section id="getting-started" class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-terminal text-indigo-500"></i> Getting Started
+            </h2>
+            <div class="glass p-8 rounded-2xl neon-border">
+                <p class="mb-4">To install the forge toolset globally on your local machine, run:</p>
+                <pre><code>git clone https://github.com/Hsu212/origins-cli.git
+cd origins-cli
+pip install --editable .
+origins sync</code></pre>
+            </div>
+        </section>
+
+        <section id="cli-commands" class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-list text-indigo-500"></i> Command Reference
+            </h2>
+            
+            <div class="space-y-4">
+                <div class="glass p-6 rounded-xl">
+                    <h3 class="font-bold text-indigo-400">origins clone [id]</h3>
+                    <p class="text-gray-400 text-sm">Clones a master blueprint into <code>origins-cli/projects/</code>. Detaches git history automatically.</p>
+                </div>
+                <div class="glass p-6 rounded-xl">
+                    <h3 class="font-bold text-indigo-400">origins setup</h3>
+                    <p class="text-gray-400 text-sm">Detects project type, installs <code>node_modules</code> or <code>venv</code>, and starts local server.</p>
+                </div>
+                <div class="glass p-6 rounded-xl">
+                    <h3 class="font-bold text-indigo-400">origins ask "question"</h3>
+                    <p class="text-gray-400 text-sm">Queries the Origins AI assistant for coding help directly in the terminal.</p>
+                </div>
+                <div class="glass p-6 rounded-xl">
+                    <h3 class="font-bold text-indigo-400">origins ship -m "msg"</h3>
+                    <p class="text-gray-400 text-sm">Automated Add-Commit-Push workflow for rapid versioning.</p>
+                </div>
+            </div>
+        </section>
+
+        
+
+        <section id="blueprints" class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-cubes text-indigo-500"></i> Blueprint Registry
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass p-6 rounded-xl border-t-4 border-blue-500">
+                    <h3 class="font-bold mb-2">Web Genesis (web-mvp)</h3>
+                    <p class="text-sm text-gray-500">Next.js + Auth + Payments dashboard.</p>
+                </div>
+                <div class="glass p-6 rounded-xl border-t-4 border-green-500">
+                    <h3 class="font-bold mb-2">Vision Node (vision-core)</h3>
+                    <p class="text-sm text-gray-500">Python + YOLOv8 real-time detection core.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-20 pt-10 border-t border-white/10 text-center text-gray-600 text-xs">
+            &copy; 2026 Origins Engineering. Proprietary & Confidential.
+        </footer>
+
+    </main>
+</body>
+</html>
