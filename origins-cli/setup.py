@@ -1,18 +1,19 @@
 from setuptools import setup
 
 setup(
-    name="origins-cli",
-    version="3.0",
+    name="origins-forge",
+    version="0.2.2",
     py_modules=["main"],
     install_requires=[
         "typer[all]",
         "rich",
-        "requests",
-        "openai",
+        "google-genai",
+        "questionary",
+        "PyGithub",
     ],
     entry_points={
         "console_scripts": [
-            "origins=main:app", 
+            "origins=main:app",
         ],
     },
 )
