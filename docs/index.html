@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Origins Forge | Developer Documentation</title>
+    <title>Origins Forge | Developer Documentation v0.2.4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -57,7 +57,6 @@
             background: rgba(15, 15, 15, 0.6); 
             border: 1px solid rgba(255, 255, 255, 0.04); 
         }
-        /* Improved Light Mode Glass Contrast */
         .light .glass { 
             background: rgba(255, 255, 255, 0.9); 
             border: 1px solid rgba(0, 0, 0, 0.1); 
@@ -68,22 +67,20 @@
             background: rgba(255, 255, 255, 0.03);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .light .terminal-header {
-            background: rgba(0, 0, 0, 0.03);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
         
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #FF6B00; border-radius: 10px; }
     </style>
 </head>
 <body class="dark bg-darkBg text-slate-400 selection:bg-origins/30" id="root">
 
+    <!-- Theme Toggle -->
     <button onclick="toggleTheme()" class="fixed bottom-10 right-10 z-50 w-14 h-14 flex items-center justify-center rounded-2xl bg-origins text-white shadow-[0_0_20px_rgba(255,107,0,0.3)] hover:scale-110 active:scale-95 transition-all">
         <i id="theme-icon" class="fas fa-moon text-xl"></i>
     </button>
 
     <div class="flex">
+        <!-- Sidebar Navigation -->
         <aside class="w-72 h-screen sticky top-0 hidden lg:flex flex-col border-r border-white/5 dark:bg-black/20 light:bg-slate-100 backdrop-blur-2xl p-8 transition-colors">
             <a href="#intro-header" class="flex items-center gap-2 mb-14 group cursor-pointer">
                 <div class="relative">
@@ -98,69 +95,77 @@
                     <h4 class="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-bold mb-4 px-4">Onboarding</h4>
                     <ul class="space-y-1">
                         <li><a href="#quickstart" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Quick Start</a></li>
-                        <li><a href="#doctor" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Health Check</a></li>
+                        <li><a href="#bootstrap" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">One-Click Setup</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-bold mb-4 px-4">Engine CLI</h4>
+                    <h4 class="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-bold mb-4 px-4">AI Factory</h4>
                     <ul class="space-y-1">
-                        <li><a href="#clone" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Forge Clone</a></li>
-                        <li><a href="#setup" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Project Setup</a></li>
-                        <li><a href="#ai" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Origins AI</a></li>
+                        <li><a href="#build" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Origins Build</a></li>
+                        <li><a href="#swarm" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Swarm Mode</a></li>
+                        <li><a href="#ai" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Ask AI</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-bold mb-4 px-4">Workspace</h4>
+                    <ul class="space-y-1">
+                        <li><a href="#get" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Universal Get</a></li>
+                        <li><a href="#setup" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Stack Setup</a></li>
+                        <li><a href="#clone" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Blueprint Clone</a></li>
                     </ul>
                 </div>
 
                 <div>
                     <h4 class="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-bold mb-4 px-4">Operations</h4>
                     <ul class="space-y-1">
-                        <li><a href="#db" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Database Ops</a></li>
-                        <li><a href="#deploy" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Cloud Shipping</a></li>
+                        <li><a href="#shipping" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">Cloud Shipping</a></li>
+                        <li><a href="#diagnostics" class="sidebar-link block px-4 py-3 rounded-xl text-sm transition">System Health</a></li>
                     </ul>
                 </div>
             </nav>
         </aside>
 
+        <!-- Main Content Area -->
         <main class="flex-1 min-h-screen p-8 md:p-16 lg:p-24 max-w-7xl mx-auto">
             
+            <!-- Hero Header -->
             <header id="intro-header" class="mb-32 scroll-mt-24">
-    <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-origins/10 border border-origins/20 text-origins text-[11px] font-bold mb-8 tracking-widest uppercase">
-        <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-origins opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-origins"></span>
-        </span>
-        Developer Portal v0.2.3
-    </div>
+                <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-origins/10 border border-origins/20 text-origins text-[11px] font-bold mb-8 tracking-widest uppercase">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-origins opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-origins"></span>
+                    </span>
+                    Production Ready v0.2.4
+                </div>
 
-    <h1 class="text-6xl lg:text-7xl font-black mb-10 tracking-[-0.04em] dark:text-white light:text-slate-900 leading-[1.1] transition-colors">
-        The Origins <span class="text-origins">Forge.</span>
-    </h1>
+                <h1 class="text-6xl lg:text-7xl font-black mb-10 tracking-[-0.04em] dark:text-white light:text-slate-900 leading-[1.1] transition-colors">
+                    The Origins <span class="text-origins">Forge.</span>
+                </h1>
 
-    <p class="text-xl text-slate-500 dark:text-slate-400 light:text-slate-600 max-w-2xl leading-relaxed font-medium transition-colors mb-12">
-        Automating the path from local development to global scale. Proprietary toolchain for Origins internal engineers.
-    </p>
+                <p class="text-xl text-slate-500 dark:text-slate-400 light:text-slate-600 max-w-2xl leading-relaxed font-medium transition-colors mb-12">
+                    An intelligent Python-powered toolchain for automated app generation, dependency orchestration, and global deployment.
+                </p>
 
-    <div class="flex flex-col sm:flex-row items-center gap-6">
-        <a href="https://github.com/Htet-2aung/origins-forge/releases/download/v0.2.3/OriginsForge_v0.2.3.pkg" 
-   class="group relative px-8 py-4 bg-origins text-white font-bold rounded-2xl overflow-hidden shadow-[0_20px_40px_rgba(255,107,0,0.2)] hover:shadow-[0_20px_40px_rgba(255,107,0,0.4)] hover:-translate-y-1 transition-all active:scale-95 inline-flex items-center justify-center">
-    
-    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-    
-    <span class="relative flex items-center gap-3">
-        <i class="fas fa-download text-sm"></i>
-        Install Origins CLI
-    </span>
-</a>
-        <a href="#quickstart" class="text-sm font-bold tracking-widest uppercase dark:text-slate-400 light:text-slate-600 hover:text-origins dark:hover:text-white transition-colors flex items-center gap-2 group">
-            View Documentation 
-            <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
-        </a>
-    </div>
-</header>
+                <div class="flex flex-col sm:flex-row items-center gap-6">
+                    <button onclick="copyInstallCommand()" id="install-btn" class="group relative px-8 py-4 bg-origins text-white font-bold rounded-2xl overflow-hidden shadow-[0_20px_40px_rgba(255,107,0,0.2)] hover:shadow-[0_20px_40px_rgba(255,107,0,0.4)] hover:-translate-y-1 transition-all active:scale-95 inline-flex items-center justify-center min-w-[240px]">
+                        <span class="relative flex items-center gap-3">
+                            <i class="fas fa-terminal text-sm"></i>
+                            Copy Install Command
+                        </span>
+                    </button>
+                    <a href="#build" class="text-sm font-bold tracking-widest uppercase dark:text-slate-400 light:text-slate-600 hover:text-origins dark:hover:text-white transition-colors flex items-center gap-2 group">
+                        Explore Build Engine 
+                        <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </header>
 
+            <!-- Section: Quick Start -->
             <section id="quickstart" class="mb-40 scroll-mt-24">
                 <div class="flex items-center gap-6 mb-12">
-                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">Getting Started</h2>
+                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">Installation</h2>
                     <div class="h-[1px] flex-1 dark:bg-gradient-to-r dark:from-white/10 dark:to-transparent light:bg-slate-200"></div>
                 </div>
                 <div class="glass overflow-hidden rounded-3xl shadow-2xl">
@@ -171,171 +176,183 @@
                     </div>
                     <div class="p-8">
                         <pre class="font-mono text-sm text-origins leading-8">
-<span class="text-slate-600"># Install the tool globally</span>
-git clone https://github.com/Hsu212/origins-cli.git
-cd origins-cli && pip install --editable .
-
-<span class="text-slate-600"># Initialize blueprints</span>
+<span class="text-slate-600"># Clone the forge</span>
+git clone https://github.com/Htet-2aung/origins-forge.git
+<span class="text-slate-600"># Install globally in editable mode</span>
+cd origins-forge && pip install -e .
+<span class="text-slate-600"># Sync blueprints</span>
 origins sync</pre>
                     </div>
                 </div>
             </section>
 
-            <section id="doctor" class="mb-40 scroll-mt-24">
+            <!-- Section: One Click Bootstrap -->
+            <section id="bootstrap" class="mb-40 scroll-mt-24">
                 <div class="flex items-center gap-6 mb-12">
-                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">Health Check</h2>
+                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">One-Click Setup</h2>
+                    <div class="h-[1px] flex-1 dark:bg-gradient-to-r dark:from-white/10 dark:to-transparent light:bg-slate-200"></div>
+                </div>
+                <div class="glass p-10 rounded-3xl relative overflow-hidden">
+                    <div class="relative z-10">
+                        <p class="text-lg dark:text-slate-400 light:text-slate-600 mb-8 max-w-2xl">
+                            The <code class="text-origins">bootstrap</code> command is designed for new engineers. It automatically detects your OS and installs Git, Node.js, Python 3.12, and Docker.
+                        </p>
+                        <div class="flex flex-col md:flex-row gap-4 items-center">
+                            <code class="bg-black/30 p-4 rounded-xl font-mono text-origins border border-white/5 w-full md:w-auto">origins bootstrap</code>
+                            <span class="text-xs font-bold uppercase tracking-widest opacity-40">Supports MacOS (Brew) | Windows (Winget) | Linux (APT)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: AI Build Engine -->
+            <section id="build" class="mb-40 scroll-mt-24">
+                <div class="flex items-center gap-6 mb-12">
+                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">AI Factory: Build Engine</h2>
+                    <div class="h-[1px] flex-1 dark:bg-gradient-to-r dark:from-white/10 dark:to-transparent light:bg-slate-200"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div class="glass p-10 rounded-3xl border-l-4 border-l-origins">
+                        <h3 class="text-xl font-bold mb-4 dark:text-white">Wizard Mode</h3>
+                        <p class="text-slate-500 mb-6">Interactive prompt to select your framework (FastAPI, Next.js, Flask), Database (Postgres, MongoDB, SQLite), and deployment features.</p>
+                        <code class="text-xs bg-black/40 p-2 rounded block">origins build --wizard</code>
+                    </div>
+                    <div id="swarm" class="glass p-10 rounded-3xl border border-origins/30 bg-origins/5">
+                        <h3 class="text-xl font-bold mb-4 text-origins flex items-center gap-3">
+                            <i class="fas fa-users-rays"></i>
+                            Swarm Mode
+                        </h3>
+                        <p class="text-slate-400 mb-6">Deploy parallel AI agents using a <code class="text-origins">ThreadPoolExecutor</code> to architect core API, dependencies, and documentation simultaneously.</p>
+                        <code class="text-xs bg-origins/20 p-2 rounded block text-white">origins build --swarm</code>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Universal Get -->
+            <section id="get" class="mb-40 scroll-mt-24">
+                <div class="flex items-center gap-6 mb-12">
+                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">Universal Get</h2>
                     <div class="h-[1px] flex-1 dark:bg-gradient-to-r dark:from-white/10 dark:to-transparent light:bg-slate-200"></div>
                 </div>
                 <div class="glass p-10 rounded-3xl">
-                    <p class="text-lg dark:text-slate-400 light:text-slate-600 mb-8 leading-relaxed transition-colors">Verify your system dependencies are properly configured.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="flex items-center justify-between p-5 rounded-2xl dark:bg-white/[0.02] light:bg-slate-50 border dark:border-white/5 light:border-slate-200 hover:border-origins/30 transition">
-                            <div class="flex items-center gap-4">
-                                <i class="fab fa-node-js text-2xl text-origins"></i>
-                                <span class="font-semibold dark:text-slate-300 light:text-slate-700">Node.js</span>
-                            </div>
-                            <span class="text-xs font-mono text-slate-500">v18+</span>
+                    <p class="mb-8">Stop remembering OS-specific package managers. <code class="text-origins">origins get</code> handles the registry for you.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="p-4 rounded-2xl bg-black/20 border border-white/5 text-center">
+                            <i class="fab fa-node-js text-origins text-2xl mb-2"></i>
+                            <p class="text-[10px] font-bold">origins get node</p>
                         </div>
-                        <div class="flex items-center justify-between p-5 rounded-2xl dark:bg-white/[0.02] light:bg-slate-50 border dark:border-white/5 light:border-slate-200 hover:border-origins/30 transition">
-                            <div class="flex items-center gap-4">
-                                <i class="fab fa-python text-2xl text-origins"></i>
-                                <span class="font-semibold dark:text-slate-300 light:text-slate-700">Python</span>
-                            </div>
-                            <span class="text-xs font-mono text-slate-500">3.8+</span>
+                        <div class="p-4 rounded-2xl bg-black/20 border border-white/5 text-center">
+                            <i class="fab fa-python text-origins text-2xl mb-2"></i>
+                            <p class="text-[10px] font-bold">origins get python</p>
                         </div>
-                    </div>
-                    <div class="mt-8 pt-8 border-t dark:border-white/5 light:border-slate-200">
-                        <pre class="font-mono text-sm text-origins">origins doctor</pre>
+                        <div class="p-4 rounded-2xl bg-black/20 border border-white/5 text-center">
+                            <i class="fab fa-docker text-origins text-2xl mb-2"></i>
+                            <p class="text-[10px] font-bold">origins get docker</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-black/20 border border-white/5 text-center">
+                            <i class="fas fa-code-branch text-origins text-2xl mb-2"></i>
+                            <p class="text-[10px] font-bold">origins get git</p>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section id="clone" class="mb-40 scroll-mt-24">
+            <!-- Section: Stack Setup -->
+            <section id="setup" class="mb-40 scroll-mt-24">
                 <div class="flex items-center gap-6 mb-12">
-                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">Forge Clone</h2>
+                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">Smart Stack Setup</h2>
+                    <div class="h-[1px] flex-1 dark:bg-gradient-to-r dark:from-white/10 dark:to-transparent light:bg-slate-200"></div>
+                </div>
+                <div class="glass p-10 rounded-3xl">
+                    <div class="flex flex-col lg:flex-row gap-12">
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold mb-4 dark:text-white">Auto-Stack Detection</h3>
+                            <p class="text-slate-500 leading-relaxed mb-6">Forge scans for <code class="text-origins">package.json</code> or <code class="text-origins">requirements.txt</code> and handles the environment initialization:</p>
+                            <ul class="space-y-4">
+                                <li class="flex gap-3 items-center text-sm"><i class="fas fa-check-circle text-origins"></i> Virtual Env (venv) creation for Python</li>
+                                <li class="flex gap-3 items-center text-sm"><i class="fas fa-check-circle text-origins"></i> OS-aware pathing for pip binaries</li>
+                                <li class="flex gap-3 items-center text-sm"><i class="fas fa-check-circle text-origins"></i> Automated dev-server startup (Uvicorn / NPM)</li>
+                            </ul>
+                        </div>
+                        <div class="flex-1 bg-black/40 rounded-3xl p-8 border border-white/5">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                <span class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">Live Output</span>
+                            </div>
+                            <pre class="font-mono text-xs text-slate-400 space-y-2">
+<span class="text-cyan-400">> origins setup</span>
+<span class="text-green-400">Detected Python/FastAPI Project...</span>
+<span class="text-yellow-400">Creating virtual environment...</span>
+<span class="text-white">Installing requirements.txt...</span>
+<span class="text-blue-400">Starting server at http://127.0.0.1:8000</span></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Cloud Shipping -->
+            <section id="shipping" class="mb-40 scroll-mt-24">
+                <div class="flex items-center gap-6 mb-12">
+                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">Cloud Operations</h2>
+                    <div class="h-[1px] flex-1 dark:bg-gradient-to-r dark:from-white/10 dark:to-transparent light:bg-slate-200"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass p-8 rounded-3xl">
+                        <h4 class="font-bold dark:text-white mb-2">origins ship</h4>
+                        <p class="text-xs text-slate-500 mb-4">Atomic commit and push to GitHub Main.</p>
+                        <code class="text-[10px] text-origins">origins ship -m "v1.1"</code>
+                    </div>
+                    <div class="glass p-8 rounded-3xl">
+                        <h4 class="font-bold dark:text-white mb-2">origins deploy</h4>
+                        <p class="text-xs text-slate-500 mb-4">One-click push to Vercel or Railway.</p>
+                        <code class="text-[10px] text-origins">origins deploy</code>
+                    </div>
+                    <div class="glass p-8 rounded-3xl">
+                        <h4 class="font-bold dark:text-white mb-2">origins secret</h4>
+                        <p class="text-xs text-slate-500 mb-4">Generate cryptographically secure keys.</p>
+                        <code class="text-[10px] text-origins">origins secret --length 64</code>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Diagnostics -->
+            <section id="diagnostics" class="mb-40 scroll-mt-24">
+                <div class="flex items-center gap-6 mb-12">
+                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">System Health</h2>
                     <div class="h-[1px] flex-1 dark:bg-gradient-to-r dark:from-white/10 dark:to-transparent light:bg-slate-200"></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="glass p-10 rounded-3xl hover:bg-origins/[0.03] transition-all group">
-                        <div class="w-12 h-12 rounded-2xl bg-origins/10 flex items-center justify-center mb-8 group-hover:scale-110 transition">
-                            <i class="fas fa-terminal text-origins text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-4 dark:text-white light:text-slate-800 transition-colors">Master Templates</h3>
-                        <p class="dark:text-slate-500 light:text-slate-600 leading-relaxed transition-colors">Clone proprietary blueprints directly into your structure with automated git scrubbing.</p>
+                    <div class="glass p-10 rounded-3xl">
+                        <h3 class="font-bold mb-4 dark:text-white">origins update</h3>
+                        <p class="text-sm text-slate-500 mb-6">Self-repairing update engine. Pulls latest source code, bootstraps build tools (setuptools/wheel), and re-links the CLI binary.</p>
+                        <code class="bg-black/30 p-3 rounded-lg text-origins text-xs block">origins update</code>
                     </div>
-                    <div class="glass p-10 rounded-3xl hover:bg-origins/[0.03] transition-all group">
-                        <div class="w-12 h-12 rounded-2xl bg-origins/10 flex items-center justify-center mb-8 group-hover:scale-110 transition">
-                            <i class="fas fa-shield-alt text-origins text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-4 dark:text-white light:text-slate-800 transition-colors">Auto Scrub</h3>
-                        <p class="dark:text-slate-500 light:text-slate-600 leading-relaxed transition-colors">Removes existing git history and sensitive metadata during the cloning process.</p>
+                    <div class="glass p-10 rounded-3xl">
+                        <h3 class="font-bold mb-4 dark:text-white">origins test-api</h3>
+                        <p class="text-sm text-slate-500 mb-6">Stress tests the Gemini 1.5 Flash connectivity and GitHub API authentication. Measures real-world AI engine latency.</p>
+                        <code class="bg-black/30 p-3 rounded-lg text-origins text-xs block">origins test-api</code>
                     </div>
                 </div>
             </section>
 
-            <section id="setup" class="mb-40 scroll-mt-24">
-                <div class="flex items-center gap-6 mb-12">
-                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">Project Setup</h2>
-                    <div class="h-[1px] flex-1 dark:bg-gradient-to-r dark:from-white/10 dark:to-transparent light:bg-slate-200"></div>
-                </div>
-                <div class="glass p-10 rounded-3xl border-l-4 border-l-origins">
-                    <p class="text-lg dark:text-slate-400 light:text-slate-600 mb-8 leading-relaxed transition-colors">The Forge intelligently detects your stack and configures the environment instantly.</p>
-                    <div class="space-y-4 dark:text-slate-400 light:text-slate-600">
-                        <div class="flex gap-4 items-start">
-                            <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-origins shadow-[0_0_8px_rgba(255,107,0,0.8)]"></div>
-                            <p class="text-sm">Detects Node.js, Next.js, and FastAPI projects.</p>
-                        </div>
-                        <div class="flex gap-4 items-start">
-                            <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-origins shadow-[0_0_8px_rgba(255,107,0,0.8)]"></div>
-                            <p class="text-sm">Automated Virtual Environment creation for Python stacks.</p>
-                        </div>
-                        <div class="flex gap-4 items-start">
-                            <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-origins shadow-[0_0_8px_rgba(255,107,0,0.8)]"></div>
-                            <p class="text-sm">Full dependency installation via npm or pip.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="ai" class="mb-40 scroll-mt-24">
-                <div class="flex items-center gap-6 mb-12">
-                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">Origins AI</h2>
-                    <div class="h-[1px] flex-1 dark:bg-gradient-to-r dark:from-white/10 dark:to-transparent light:bg-slate-200"></div>
-                </div>
-                <div class="relative glass p-10 rounded-3xl overflow-hidden">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-origins/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-                    <div class="relative z-10">
-                        <h3 class="text-xl font-bold mb-6 flex items-center gap-3 dark:text-white light:text-slate-800 transition-colors">
-                            <i class="fas fa-brain text-origins"></i>
-                            GPT-4 Powered DevOps
-                        </h3>
-                        <p class="dark:text-slate-500 light:text-slate-600 mb-8 max-w-xl leading-relaxed transition-colors">Integrated Senior DevOps helper providing concise code snippets and architectural advice.</p>
-                        <div class="dark:bg-black/40 light:bg-slate-100 rounded-2xl p-6 font-mono text-sm border dark:border-white/5 light:border-slate-200 transition-colors">
-                            <span class="text-origins">origins</span> ask "Configure Redis with Docker"
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="db" class="mb-40 scroll-mt-24">
-                <div class="flex items-center gap-6 mb-12">
-                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">Database Ops</h2>
-                    <div class="h-[1px] flex-1 dark:bg-gradient-to-r dark:from-white/10 dark:to-transparent light:bg-slate-200"></div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass p-8 rounded-3xl border dark:border-white/5 light:border-slate-200 hover:border-origins/20 transition group">
-                        <div class="flex justify-between items-start mb-6">
-                            <i class="fas fa-database text-2xl text-origins"></i>
-                            <span class="px-3 py-1 rounded-full bg-origins/10 text-[10px] text-origins font-bold">STABLE</span>
-                        </div>
-                        <h4 class="font-bold mb-2 dark:text-white light:text-slate-800 transition-colors">PostgreSQL</h4>
-                        <p class="text-sm dark:text-slate-500 light:text-slate-600 mb-6 transition-colors">Dockerized Postgres with default secure credentials.</p>
-                        <code class="text-xs dark:bg-black/30 light:bg-slate-100 p-2 rounded block transition-colors">origins db --type postgres</code>
-                    </div>
-                    <div class="glass p-8 rounded-3xl border dark:border-white/5 light:border-slate-200 hover:border-origins/20 transition group">
-                        <div class="flex justify-between items-start mb-6">
-                            <i class="fas fa-bolt text-2xl text-origins"></i>
-                            <span class="px-3 py-1 rounded-full bg-origins/10 text-[10px] text-origins font-bold">FAST</span>
-                        </div>
-                        <h4 class="font-bold mb-2 dark:text-white light:text-slate-800 transition-colors">Redis</h4>
-                        <p class="text-sm dark:text-slate-500 light:text-slate-600 mb-6 transition-colors">In-memory data structure store for caching.</p>
-                        <code class="text-xs dark:bg-black/30 light:bg-slate-100 p-2 rounded block transition-colors">origins db --type redis</code>
-                    </div>
-                </div>
-            </section>
-
-            <section id="deploy" class="mb-40 scroll-mt-24">
-                <div class="flex items-center gap-6 mb-12">
-                    <h2 class="text-3xl font-bold dark:text-white light:text-slate-900 tracking-tight transition-colors">Cloud Shipping</h2>
-                    <div class="h-[1px] flex-1 dark:bg-gradient-to-r dark:from-white/10 dark:to-transparent light:bg-slate-200"></div>
-                </div>
-                <div class="glass p-12 rounded-3xl bg-gradient-to-br dark:from-origins/[0.05] light:from-slate-50 to-transparent">
-                    <div class="max-w-xl">
-                        <h3 class="text-2xl font-bold mb-6 dark:text-white light:text-slate-800 transition-colors">Production Ready in Seconds</h3>
-                        <p class="dark:text-slate-500 light:text-slate-600 mb-8 leading-relaxed transition-colors">Direct integration with Vercel for web projects and Render/Railway for backend services.</p>
-                        <div class="flex flex-wrap gap-4">
-                            <div class="dark:bg-black/50 light:bg-white px-6 py-3 rounded-xl border dark:border-white/5 light:border-slate-200 font-mono text-sm shadow-sm transition-colors">origins ship -m "v1.0"</div>
-                            <div class="dark:bg-black/50 light:bg-white px-6 py-3 rounded-xl border dark:border-white/5 light:border-slate-200 font-mono text-sm shadow-sm transition-colors">origins deploy</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+            <!-- Footer -->
             <footer class="pt-24 border-t dark:border-white/5 light:border-slate-200 flex flex-col md:flex-row justify-between items-center gap-10 opacity-60">
                 <div class="flex items-center gap-4">
                     <img src="https://github.com/Htet-2aung/origins-forge/blob/main/docs/logo.png?raw=true" alt="Origins" class="h-6 w-auto grayscale brightness-110">
-                    <span class="text-[11px] font-bold tracking-[0.3em] uppercase dark:text-slate-300 light:text-slate-700">Origins Engineering</span>
+                    <span class="text-[11px] font-bold tracking-[0.3em] uppercase dark:text-slate-300 light:text-slate-700">Origins Engineering Factory</span>
                 </div>
                 <div class="text-[11px] font-bold tracking-widest space-x-10 uppercase dark:text-slate-300 light:text-slate-700">
-                    <a href="https://github.com/Hsu212" class="hover:text-origins transition">GitHub</a>
-                    <a href="#" class="hover:text-origins transition">Internal Wiki</a>
-                    <span class="text-slate-500">© 2026</span>
+                    <a href="https://github.com/Htet-2aung" class="hover:text-origins transition">GitHub</a>
+                    <a href="#" class="hover:text-origins transition">Internal API</a>
+                    <span class="text-slate-500">© 2026 v0.2.4</span>
                 </div>
             </footer>
         </main>
     </div>
 
     <script>
+        // Theme Toggle Functionality
         function toggleTheme() {
             const root = document.getElementById('root');
             const icon = document.getElementById('theme-icon');
@@ -352,6 +369,7 @@ origins sync</pre>
             }
         }
 
+        // Active Link Observer
         const observerOptions = { root: null, rootMargin: '-20% 0px -70% 0px', threshold: 0 };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -366,23 +384,22 @@ origins sync</pre>
 
         document.querySelectorAll('section').forEach(section => observer.observe(section));
 
-
+        // Copy Install Command
         function copyInstallCommand() {
-    const cmd = "git clone https://github.com/Htet-2aung/origins-forge.git && cd origins-forge && pip install -e .";
-    navigator.clipboard.writeText(cmd);
-    
-    // Industrial Standard Feedback
-    const btn = event.currentTarget;
-    const originalText = btn.innerHTML;
-    
-    btn.innerHTML = `<span class="relative flex items-center gap-3"><i class="fas fa-check"></i> Copied to Clipboard</span>`;
-    btn.classList.replace('bg-origins', 'bg-green-600');
-    
-    setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.classList.replace('bg-green-600', 'bg-origins');
-    }, 2000);
-}
+            const cmd = "git clone https://github.com/Htet-2aung/origins-forge.git && cd origins-forge && pip install -e .";
+            navigator.clipboard.writeText(cmd);
+            
+            const btn = document.getElementById('install-btn');
+            const originalHTML = btn.innerHTML;
+            
+            btn.innerHTML = `<span class="relative flex items-center gap-3"><i class="fas fa-check"></i> Copied to Clipboard</span>`;
+            btn.classList.replace('bg-origins', 'bg-green-600');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.replace('bg-green-600', 'bg-origins');
+            }, 2000);
+        }
     </script>
 </body>
 </html>
