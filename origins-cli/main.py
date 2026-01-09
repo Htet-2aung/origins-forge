@@ -33,7 +33,7 @@ CACHE_DIR = os.path.join(CONFIG_DIR, "cache")
 MANIFEST_FILE = os.path.join(CONFIG_DIR, "templates.json")
 MANIFEST_URL = "https://gist.github.com/Htet-2aung/8a8a85c1f45979e1215f2a30bcfb9475/raw/template.json"
 CONFIG_FILE = os.path.join(CONFIG_DIR, "config.json") 
-CURRENT_VERSION = "0.2.2"
+CURRENT_VERSION = "0.2.4"
 # Points to a raw text file on GitHub that just contains the version number (e.g., "4.0.2")
 VERSION_URL = "https://raw.githubusercontent.com/Htet-2aung/origins-forge/main/version.txt"
 
