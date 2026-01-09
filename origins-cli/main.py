@@ -12,13 +12,15 @@ from rich.progress import track
 from rich.table import Table
 from rich.markdown import Markdown
 import platform
-import sys
+import sys , time
 from google import genai  
 import questionary
 from github import Github
 from concurrent.futures import ThreadPoolExecutor
+from google.genai import errors
+from rich.panel import Panel
 
-app = typer.Typer(help="Origins Intelligent Dev Tool v0.2.2")
+app = typer.Typer(help="Origins Intelligent Dev Tool v0.2.4")
 console = Console()
 
 
@@ -139,6 +141,7 @@ def config(
 
 @app.command()
 def sync():
+    """🌍 Sync with Origins HQ to download latest blueprints."""
     console.print("[bold blue]🌍 Syncing with Origins HQ...[/bold blue]")
     templates = sync_logic()
     table = Table(title=f"Synced {len(templates)} Blueprints")
@@ -151,6 +154,7 @@ def sync():
 
 @app.command()
 def clone(template_id: str = typer.Argument(None)):
+    """🏗️ Clone proprietary blueprints with automated git scrubbing."""
     templates = sync_logic()
     if not template_id:
         for k, v in templates.items():
@@ -190,17 +194,93 @@ def clone(template_id: str = typer.Argument(None)):
         title="Origins Forge", 
         border_style="green"
     ))
+
+def retry_generate(client, model_id, contents):
+    """Handles 429 errors by waiting and retrying to stay within Free Tier limits."""
+    for attempt in range(5):
+        try:
+            return client.models.generate_content(model=model_id, contents=contents)
+        except errors.ClientError as e:
+            if "429" in str(e):
+                # Standard exponential backoff
+                wait_time = 12 * (attempt + 1) 
+                console.print(f"[yellow]⚠️  AI Engine Busy. Cooling down ({wait_time}s)...[/yellow]")
+                time.sleep(wait_time)
+            else:
+                raise e
+    raise Exception("Max retries exceeded. AI quota is fully exhausted.")
+
 @app.command()
-def update():
-    """🔄 Automatically update the Origins CLI to the latest version."""
-    console.print("[bold blue]🚀 Starting self-update...[/bold blue]")
-    
-    # This command pulls the latest code and re-installs the CLI
-    try:
-        subprocess.run([sys.executable, "-m", "pip", "install", "--upgrade", "git+https://github.com/Htet-2aung/origins-forge.git"], check=True)
-        console.print("[bold green]✅ Update complete! Restart your terminal to apply changes.[/bold green]")
-    except Exception as e:
-        console.print(f"[bold red]❌ Update failed: {e}[/bold red]")
+def build(
+    prompt: str = typer.Argument(None, help="Describe the app you want to build"),
+    wizard: bool = typer.Option(False, "--wizard", "-w", help="Launch interactive setup"),
+    swarm: bool = typer.Option(False, "--swarm", "-s", help="Use parallel AI agents")
+):
+    """🚀 Origins Build: High-speed app generation with Quota Management."""
+    config = load_config()
+    gemini_key = config.get("gemini_key")
+    if not gemini_key:
+        gemini_key = Prompt.ask("🔑 Enter Gemini API Key")
+        save_config("gemini_key", gemini_key)
+        
+    client = genai.Client(api_key=gemini_key)
+
+    # --- 1. MODE SELECTION ---
+    if wizard:
+        answers = questionary.form(
+            name=questionary.text("Project Name (slug):", default="origins-app"),
+            stack=questionary.select("Framework:", choices=["FastAPI", "Next.js", "Flask"]),
+            db=questionary.select("Database:", choices=["PostgreSQL", "MongoDB", "SQLite"]),
+            features=questionary.checkbox("Include Features:", choices=["Docker", "Auth", "CI/CD"]),
+        ).ask()
+        project_name = answers['name']
+        final_prompt = f"Build a {answers['stack']} app with {answers['db']}. Features: {', '.join(answers['features'])}"
+    else:
+        if not prompt:
+            prompt = Prompt.ask("What would you like to build today?")
+        project_name = Prompt.ask("Project Name", default="origins-ai-app")
+        final_prompt = prompt
+
+    target_dir = os.path.join(PROJECTS_DIR, project_name)
+    os.makedirs(target_dir, exist_ok=True)
+
+    # --- 2. EXECUTION ---
+    if swarm:
+        console.print(Panel(f"🐝 [bold magenta]Swarm Mode[/bold magenta]\nDeploying parallel agents...", border_style="magenta"))
+        tasks = {
+            "api/main.py": f"Core API entry point for {final_prompt}",
+            "requirements.txt": f"Dependencies for {final_prompt}",
+            "README.md": f"Professional documentation for {final_prompt}",
+            ".gitignore": "Standard python and env gitignore"
+        }
+
+        def run_agent(file_path, task_prompt):
+            full_path = os.path.join(target_dir, file_path)
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            # Use retry logic to prevent swarm from crashing on 429
+            res = retry_generate(client, 'gemini-3-flash-preview', task_prompt)
+            with open(full_path, "w") as f:
+                f.write(res.text.strip().replace("```python", "").replace("```", ""))
+
+        with ThreadPoolExecutor(max_workers=2) as executor: # Keep workers low for Free Tier
+            executor.map(lambda p: run_agent(p[0], p[1]), tasks.items())
+    else:
+        # NORMAL MODE
+        with console.status("[bold cyan]Architecting...[/bold cyan]"):
+            struct_res = retry_generate(client, 'gemini-3-flash-preview', f"Return ONLY a JSON list of files for: {final_prompt}")
+            files = json.loads(struct_res.text.strip().replace("```json", "").replace("```", ""))
+
+        for f_path in track(files, description="Writing files..."):
+            full_path = os.path.join(target_dir, f_path)
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            code_res = retry_generate(client, 'gemini-3-flash-preview', f"Write code for {f_path} in {final_prompt}")
+            with open(full_path, "w") as f:
+                f.write(code_res.text.strip())
+
+    console.print(Panel(f"✅ Build Complete: {target_dir}", title="Origins Factory", border_style="green"))
+
+    if Confirm.ask("Push to GitHub?"):
+        ship_to_github(target_dir, project_name)
 
 @app.command()
 def ask(question: str):
@@ -285,85 +365,6 @@ def ship_to_github(target_dir: str, repo_name: str):
         console.print(f"[bold red]❌ GitHub Sync Failed:[/bold red] {e}")
 
 @app.command()
-def build(
-    prompt: str = typer.Argument(None, help="Describe the app you want to build"),
-    wizard: bool = typer.Option(False, "--wizard", "-w", help="Launch interactive setup"),
-    swarm: bool = typer.Option(False, "--swarm", "-s", help="Use parallel AI agents")
-):
-    """🚀 Origins Build: High-speed app generation (Normal, Wizard, or Swarm)"""
-    config = load_config()
-    gemini_key = config.get("gemini_key")
-    client = genai.Client(api_key=gemini_key)
-
-    # --- 1. MODE SELECTION: WIZARD ---
-    if wizard:
-        answers = questionary.form(
-            name=questionary.text("Project Name (slug):", default="origins-app"),
-            stack=questionary.select("Framework:", choices=["FastAPI", "Next.js", "Flask"]),
-            db=questionary.select("Database:", choices=["PostgreSQL", "MongoDB", "SQLite"]),
-            features=questionary.checkbox("Include Features:", choices=["Docker", "Auth", "CI/CD"]),
-        ).ask()
-        project_name = answers['name']
-        final_prompt = f"Build a {answers['stack']} app with {answers['db']}. Features: {', '.join(answers['features'])}"
-    else:
-        # --- 2. MODE SELECTION: NORMAL ---
-        if not prompt:
-            prompt = Prompt.ask("What would you like to build today?")
-        project_name = Prompt.ask("Project Name", default="origins-ai-app")
-        final_prompt = prompt
-
-    target_dir = os.path.join(PROJECTS_DIR, project_name)
-    os.makedirs(target_dir, exist_ok=True)
-
-    # --- 3. EXECUTION: SWARM VS NORMAL ---
-    if swarm:
-        # SWARM MODE: Parallel Agents for Speed
-        console.print(Panel(f"🐝 [bold magenta]Swarm Mode Initialized[/bold magenta]\nDeploying specialized agents for {project_name}...", border_style="magenta"))
-        
-        # Define tasks for different "Agents"
-        tasks = {
-            "api/main.py": f"Write the core API entry point for {final_prompt}",
-            "requirements.txt": f"List all python dependencies for {final_prompt}",
-            "README.md": f"Write a professional README for {final_prompt}",
-            "docker-compose.yml": f"Write a docker-compose file for {final_prompt} with DB services"
-        }
-
-        def run_agent(file_path, task_prompt):
-            with console.status(f"🤖 Agent working on {file_path}..."):
-                full_path = os.path.join(target_dir, file_path)
-                os.makedirs(os.path.dirname(full_path), exist_ok=True)
-                res = client.models.generate_content(model='gemini-3-flash-preview', contents=task_prompt)
-                with open(full_path, "w") as f:
-                    f.write(res.text.strip().replace("```python", "").replace("```", ""))
-            return file_path
-
-        with ThreadPoolExecutor() as executor:
-            executor.map(lambda p: run_agent(p[0], p[1]), tasks.items())
-
-    else:
-        # NORMAL MODE: Single Architect
-        with console.status("[bold cyan]Architecting project structure...[/bold cyan]"):
-            struct_res = client.models.generate_content(
-                model='gemini-3-flash-preview',
-                contents=f"Return ONLY a JSON list of files for: {final_prompt}"
-            )
-            files = json.loads(struct_res.text.strip().replace("```json", "").replace("```", ""))
-
-        for f_path in files:
-            with console.status(f"Writing {f_path}..."):
-                full_path = os.path.join(target_dir, f_path)
-                os.makedirs(os.path.dirname(full_path), exist_ok=True)
-                code_res = client.models.generate_content(model='gemini-3-flash-preview', contents=f"Write code for {f_path}")
-                with open(full_path, "w") as f:
-                    f.write(code_res.text.strip().replace("```python", "").replace("```", ""))
-
-    console.print(Panel(f"✅ Build Complete: {target_dir}\n🚀 Run: [white]cd {target_dir} && origins setup[/white]", title="Origins Factory", border_style="green"))
-
-    if Confirm.ask("Push this project to GitHub now?"):
-        ship_to_github(target_dir, project_name) 
-
-
-@app.command()
 def debug_ai():
     """🔍 List all models available to your API key."""
     cfg = load_config()
@@ -375,17 +376,183 @@ def debug_ai():
         table.add_row(m.name)
     
     console.print(table)
+REPO_NAME = "Htet-2aung/origins-forge"
+
+def get_latest_version():
+    """Fetch the latest tag from GitHub Releases."""
+    try:
+        # Using the GitHub API to check the latest release tag
+        api_url = f"https://api.github.com/repos/{REPO_NAME}/releases/latest"
+        response = requests.get(api_url, timeout=2)
+        if response.status_code == 200:
+            return response.json().get("tag_name", "").replace("v", "")
+    except:
+        return None
+    return None
+
+@app.command()
+def update():
+    """🔄 Industrial Update: Syncs source code and repairs environment."""
+    console.print(Panel(f"🚀 [bold blue]Origins Forge Update System[/bold blue]\nCurrent Version: [cyan]{CURRENT_VERSION}[/cyan]"))
+    
+    # 1. Version Check
+    latest = get_latest_version()
+    if latest and latest == CURRENT_VERSION:
+        console.print("[green]✅ You are already on the latest version.[/green]")
+        if not Confirm.ask("Would you like to force a re-installation anyway?"):
+            return
+    elif latest:
+        console.print(f"[yellow]🔔 New version [bold]{latest}[/bold] available! (Current: {CURRENT_VERSION})[/yellow]")
+
+    # 2. Locate Root (Finds .git folder)
+    current_file_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = current_file_dir
+    while repo_root != "/" and not os.path.exists(os.path.join(repo_root, ".git")):
+        repo_root = os.path.dirname(repo_root)
+
+    if not os.path.exists(os.path.join(repo_root, ".git")):
+        console.print("[bold red]❌ Error:[/bold red] CLI source not found. Are you running from a compiled .pkg?")
+        console.print("[dim]For .pkg installs, please download the latest installer from GitHub Releases.[/dim]")
+        return
+
+    try:
+        # 3. Pull Latest Code
+        with console.status("[bold green]Pulling changes from GitHub...[/bold green]"):
+            subprocess.run(["git", "pull", "origin", "main"], cwd=repo_root, check=True, capture_output=True)
+        
+        # 4. Bootstrap Build Tools
+        # This fixes the 'setuptools' error by ensuring they exist in the venv
+        with console.status("[bold yellow]Repairing build environment...[/bold yellow]"):
+            subprocess.run([sys.executable, "-m", "pip", "install", "setuptools", "wheel"], check=True, capture_output=True)
+
+        # 5. Re-install in Editable Mode
+        with console.status("[bold cyan]Re-linking Origins CLI...[/bold cyan]"):
+            # Target the folder containing pyproject.toml
+            install_path = os.path.join(repo_root, "origins-cli") if "origins-cli" in os.listdir(repo_root) else repo_root
+            subprocess.run([
+                sys.executable, "-m", "pip", "install", "-e", install_path, "--no-build-isolation"
+            ], check=True, capture_output=True)
+            
+        console.print(Panel("✨ [bold green]Update Successful![/bold green]\nOrigins Forge is now ready for action.", border_style="green"))
+        
+    except Exception as e:
+        console.print(Panel(f"[bold red]Update Failed[/bold red]\n\n{str(e)}", title="System Error", border_style="red"))
+@app.command()
+def where():
+    """📍 Locate all Origins Engine directories and binaries."""
+    table = Table(title="Origins Engine Location Map", show_header=True, header_style="bold magenta")
+    table.add_column("Component", style="cyan")
+    table.add_column("Path", style="green")
+
+    # Binary Location
+    bin_path = shutil.which("origins") or "Not Found (Run within venv)"
+    table.add_row("Executable Binary", bin_path)
+
+    # Configuration Location
+    table.add_row("Global Config", CONFIG_FILE)
+    
+    # Projects Location
+    table.add_row("Software Factory", PROJECTS_DIR)
+
+    # Source Code (Only visible during dev)
+    try:
+        source_dir = os.path.dirname(os.path.abspath(__file__))
+        table.add_row("Source Code", source_dir)
+    except:
+        pass
+
+    console.print(table)
+    console.print(f"\n[dim]To open the config folder, run:[/dim] [bold]open {CONFIG_DIR}[/bold]")
+
+@app.command()
+def test_api():
+    """🧪 Stress test AI & GitHub connectivity."""
+    console.print(Panel("⚡ [bold]Starting Engine Stress Test[/bold]", border_style="yellow"))
+    cfg = load_config()
+    
+    # 1. Gemini 3 Flash Test
+    key = cfg.get("gemini_key")
+    if key:
+        try:
+            client = genai.Client(api_key=key)
+            with console.status("[bold cyan]Pinging Gemini 3 Flash...[/bold]"):
+                start = time.time()
+                # A simple lightweight prompt to test latency
+                client.models.generate_content(model='gemini-3-flash-preview', contents="Say 'Ready'")
+                elapsed = round(time.time() - start, 2)
+            console.print(f"✅ [bold green]AI ENGINE:[/bold] Connected. Latency: {elapsed}s")
+        except Exception as e:
+            console.print(f"❌ [bold red]AI ENGINE:[/bold] Error: {str(e)[:50]}...")
+    
+    # 2. GitHub API Test
+    token = cfg.get("github_token")
+    if token:
+        try:
+            g = Github(token)
+            user = g.get_user().login
+            console.print(f"✅ [bold green]GITHUB API:[/bold] Authenticated as @{user}")
+        except Exception:
+            console.print("❌ [bold red]GITHUB API:[/bold] Authentication Failed.")
+    else:
+        console.print("⚠️  [bold yellow]GITHUB API:[/bold] No token found. Run 'origins config' to add one.")
+@app.command()
+def bootstrap():
+    """🚀 One-click environment setup for new Origins engineers."""
+    deps = ["git", "node", "python", "docker"]
+    for d in deps:
+        subprocess.run([sys.executable, "-m", "origins", "get", d])
 
 @app.command()
 def start():
+    """🚀 Quick Start: Launch local server based on project type."""
     ptype = get_project_type()
     if ptype == "web":
         os.system("npm run dev")
     elif ptype == "ai":
         os.system("uvicorn main:app --reload")
+@app.command()
+def get(item: str = typer.Argument(..., help="Item to install (git, node, python, etc.)")):
+    """📥 Universal Downloader: Auto-detects OS and installs dependencies."""
+    
+    registry = {
+        "git": {"brew": "git", "winget": "Git.Git", "apt": "git"},
+        "node": {"brew": "node", "winget": "OpenJS.NodeJS", "apt": "nodejs"},
+        "python": {"brew": "python@3.12", "winget": "Python.Python.3.12", "apt": "python3"},
+        "docker": {"brew": "docker", "winget": "Docker.DockerDesktop", "apt": "docker.io"},
+    }
+
+    item = item.lower()
+    os_type = platform.system().lower() # 'windows', 'darwin' (mac), or 'linux'
+
+    if item not in registry:
+        console.print(f"[red]Item '{item}' not found in registry.[/red]")
+        return
+
+    commands = registry[item]
+
+    try:
+        if os_type == "darwin":  # macOS
+            with console.status(f"🍎 [bold]MacOS:[/bold] Installing {item} via Brew..."):
+                subprocess.run(["brew", "install", commands["brew"]], check=True)
+        
+        elif os_type == "windows":
+            with console.status(f"🪟 [bold]Windows:[/bold] Installing {item} via Winget..."):
+                # --silent --accept-source-agreements makes it industrial/non-interactive
+                subprocess.run(["winget", "install", "--id", commands["winget"], "--silent", "--accept-source-agreements"], check=True)
+        
+        elif os_type == "linux":
+            with console.status(f"🐧 [bold]Linux:[/bold] Installing {item} via APT..."):
+                subprocess.run(["sudo", "apt-get", "update"], check=True, capture_output=True)
+                subprocess.run(["sudo", "apt-get", "install", "-y", commands["apt"]], check=True)
+
+        console.print(f"✅ [bold green]{item.upper()} installed successfully on {os_type.capitalize()}![/bold green]")
+    
+    except Exception as e:
+        console.print(f"[bold red]❌ Installation failed:[/bold red] Ensure your system package manager is configured.")
 
 @app.command()
 def ship(message: str = typer.Option("Update", "--msg", "-m")):
+    """🚢 Quick Ship: Commit and push all changes to GitHub."""
     subprocess.run(["git", "add", "."])
     subprocess.run(["git", "commit", "-m", message])
     subprocess.run(["git", "push", "origin", "main"])
@@ -393,6 +560,7 @@ def ship(message: str = typer.Option("Update", "--msg", "-m")):
 
 @app.command()
 def kill(port: int):
+    """💀 Kill process running on specified port."""
     try:
         result = subprocess.check_output(f"lsof -t -i:{port}", shell=True)
         pid = int(result.strip())
@@ -403,11 +571,13 @@ def kill(port: int):
 
 @app.command()
 def list():
+    """📂 List all Origins Forge projects."""
     projects = [d for d in os.listdir(PROJECTS_DIR) if os.path.isdir(os.path.join(PROJECTS_DIR, d))]
     table = Table(title="Origins Forge Projects")
     table.add_column("Project Name", style="cyan")
     for p in projects: table.add_row(p)
     console.print(table)
+
 @app.command()
 def version():
     """🔢 Check current version and look for updates."""
@@ -430,6 +600,7 @@ def version():
 
 @app.command()
 def nuke(name: str):
+    """💥 Nuke an Origins Forge project permanently."""
     target = os.path.join(PROJECTS_DIR, name)
     if os.path.exists(target) and Confirm.ask(f"Delete {name}?"):
         shutil.rmtree(target)
@@ -438,6 +609,7 @@ def nuke(name: str):
 
 @app.command()
 def doctor():
+    """🩺 Origins Doctor: Diagnose common environment issues."""
     checks = {"Node": "node -v", "Python": "python3 --version", "Git": "git --version", "Docker": "docker -v"}
     for n, c in checks.items():
         try:
@@ -447,6 +619,7 @@ def doctor():
 
 @app.command()
 def deploy():
+    """🚀 One-Click Deploy: Push your project to the cloud."""
     ptype = get_project_type()
     if ptype == "web":
         console.print("🚀 Deploying to Vercel...")
@@ -456,7 +629,9 @@ def deploy():
         os.system("git push origin main")
 
 @app.command()
+
 def db(type: str = "postgres"):
+    """🗄️ Launch local database instances via Docker."""
     if type == "postgres":
         os.system("docker run --name origins-pg -e POSTGRES_PASSWORD=password -d -p 5432:5432 postgres")
     elif type == "redis":
@@ -464,10 +639,12 @@ def db(type: str = "postgres"):
 
 @app.command()
 def secret(length: int = 32):
+    """🔐 Generate a secure random secret key."""
     console.print(Panel(secrets.token_hex(length // 2), title="Secret Generated"))
 
 @app.command()
 def gen(name: str):
+    """🛠️ Scaffold basic components/routes based on project type."""
     ptype = get_project_type()
     if ptype == "web":
         path = f"src/components/{name}.tsx"
@@ -482,6 +659,7 @@ def gen(name: str):
 
 @app.command()
 def scrub():
+    """🧹 Clean up project dependencies and cache files."""
     ptype = get_project_type()
     if ptype == "web":
         shutil.rmtree("node_modules", ignore_errors=True)
