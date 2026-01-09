@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="origins-forge",
-    version="0.2.2",
+    version="0.2.4",
     py_modules=["main"],
     install_requires=[
         "typer[all]",
