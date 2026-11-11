@@ -35,5 +35,5 @@ Origins Forge transforms our software engineering team into a high-output dev sh
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/Htet-2aung/origins-forge.git](https://github.com/Htet-2aung/origins-forge.git)
+   git clone https://github.com/Htet-2aung/origins-forge.git
    cd origins-cli
